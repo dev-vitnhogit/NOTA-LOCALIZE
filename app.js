@@ -463,62 +463,19 @@ function getOriginFromMap() {
 
 
 function openNavigation(stop) {
-  if (!stop || !stop.address) {
-    setStatus("Endereço de entrega inválido.", "error");
-    return;
-  }
-
-  // Abre uma aba imediatamente para evitar bloqueio do navegador.
-  const gpsTab = window.open("about:blank", "_blank");
-
-  if (!gpsTab) {
-    setStatus("Permita a abertura de novas abas no navegador.", "error");
-    return;
-  }
-
-  if (!navigator.geolocation) {
-    gpsTab.close();
-    setStatus("Seu navegador não suporta geolocalização.", "error");
-    return;
-  }
-
-  setStatus("Obtendo sua localização atual...");
-
-  navigator.geolocation.getCurrentPosition(
-    function (position) {
-      const origin =
-        `${position.coords.latitude},${position.coords.longitude}`;
-
-      // Usa o endereço que você clicou, não as coordenadas
-      // que o Photon encontrou.
-      const destination =
-        `${stop.address}, Atibaia, São Paulo, Brasil`;
-
-      const url =
-        "https://www.google.com/maps/dir/?api=1" +
-        `&origin=${encodeURIComponent(origin)}` +
-        `&destination=${encodeURIComponent(destination)}` +
-        "&travelmode=driving&dir_action=navigate";
-
-      gpsTab.location.href = url;
-
-      setStatus("Destino enviado ao Google Maps.", "success");
-    },
-    function (error) {
-      gpsTab.close();
-
-      if (error.code === 1) {
-        setStatus("Permita o acesso à localização no navegador.", "error");
-      } else {
-        setStatus("Não foi possível obter sua localização atual.", "error");
-      }
-    },
-    {
-      enableHighAccuracy: true,
-      timeout: 15000,
-      maximumAge: 0
+    if (!stop || !stop.address) {
+        setStatus("Endereço de entrega inválido.", "error");
+        return;
     }
-  );
+
+    const destination = encodeURIComponent(stop.address);
+
+    const url =
+        `https://www.google.com/maps/dir/?api=1` +
+        `&destination=${destination}` +
+        `&travelmode=driving`;
+
+    window.location.href = url;
 }
 
 

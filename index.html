@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RotaFácil — Planejador de entregas</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand-mark">RF</div>
+    <div>
+      <h1>Nota Localize</h1>
+      <p>Planejador de Rotas</p>
+    </div>
+    <span class="demo-tag">Protótipo gratuito</span>
+  </header>
+
+  <main class="layout">
+    <aside class="panel">
+      <section class="intro">
+        <p class="eyebrow">ORGANIZE SUAS ENTREGAS</p>
+        <h2>Uma rota mais organizada, em poucos passos.</h2>
+        <p class="muted">Cole os endereços abaixo, um por linha. Inclua cidade e estado para melhorar a localização.</p>
+      </section>
+
+      <label for="startAddress">Ponto de partida (opcional)</label>
+
+      <input id="startAddress" type="text" placeholder="Digite um endereço de partida">
+
+      <button id="myLocation" class="secondary" type="button">
+        📍 Minha localização
+      </button>
+
+      <div class="field-heading">
+        <label for="addresses">Endereços de entrega</label>
+        <span id="countLabel">0/30</span>
+      </div>
+      <textarea id="addresses" rows="9"
+        placeholder="Rua das Flores, 123, Campinas - SP&#10;Av. Brasil, 500, Campinas - SP&#10;Rua Central, 45, Campinas - SP"></textarea>
+      <div class="small-note">Máximo de 30 paradas por rota neste protótipo.</div>
+
+      <button id="buildRoute" class="primary">Montar rota</button>
+      <button id="clearAll" class="secondary">Limpar tudo</button>
+
+      <div id="status" class="status" role="status">Pronto para receber os endereços.</div>
+
+      <section class="route-summary" id="summary" hidden>
+        <div class="summary-item">
+          <span class="summary-number" id="stopTotal">0</span>
+          <span class="summary-caption">paradas</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-number" id="distanceTotal">—</span>
+          <span class="summary-caption">distância estimada</span>
+        </div>
+      </section>
+
+      <section class="stop-section">
+        <div class="list-title-row">
+          <h3>Lista de entregas</h3>
+          <span id="progressLabel">0 concluídas</span>
+        </div>
+        <div id="stopList" class="stop-list">
+          <p class="empty-state">Sua rota aparecerá aqui depois que você montar.</p>
+        </div>
+      </section>
+      <p class="disclaimer">Os endereços e o progresso ficam apenas nesta página. Atualizar ou fechar o navegador pode
+        apagar a rota.</p>
+    </aside>
+
+    <section class="map-section">
+      <div class="map-heading">
+        <div>
+          <h2>Mapa da rota</h2>
+          <p>Confira a sequência e abra a navegação quando estiver pronto.</p>
+        </div>
+        <button id="openAll" class="secondary small-button" disabled>Abrir primeira parada</button>
+      </div>
+      <div id="map" aria-label="Mapa com a rota de entregas"></div>
+      <div class="map-legend"><span class="legend-dot"></span> Paradas numeradas <span class="legend-line"></span> Rota
+        estimada</div>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
+  <script src="app.js"></script>
+  
+</body>
+
+</html>

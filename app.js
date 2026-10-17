@@ -80,17 +80,87 @@ const sortable = Sortable.create(stopList, {
 // 5. CONTAGEM E LEITURA DOS ENDEREÇOS
 // ==================================================
 
+
 function updateCount() {
   const count = getAddressLines().length;
+
   countLabel.textContent = `${count}/${MAX_STOPS}`;
   countLabel.style.color = count > MAX_STOPS ? "#b91c1c" : "";
 }
 
 function getAddressLines() {
-  return addressesInput.value
-    .split(/\r?\n/)
-    .map(address => address.trim())
-    .filter(address => address.length > 0);
+  const texto = addressesInput.value;
+  const linhas = texto.split(/\r?\n/);
+  const enderecos = [];
+  let atual = "";
+
+  const ignorar =
+    /^(obs\.?|observação|observacao|cep:|📍)/i;
+
+  const titulo =
+    /^\s*(?:\d+[.)]\s*)?.{2,80}\((?:AMA PATAS|PRÓCARNÍVOROS|PEQUENO TRABALHADOR)\)\s*$/i;
+
+  const pareceEndereco =
+    /\b(?:rua|avenida|alameda|travessa|estrada|rodovia|praça|via)\b|\b(?:r|av)\.\s*/i;
+
+  function salvar() {
+    if (!atual.trim()) return;
+
+    let endereco = atual
+      .replace(/^\s*\d+[.)]\s*/, "")
+      .replace(/\bBrasil\b/gi, "")
+      .replace(/\s*,\s*/g, ", ")
+      .replace(/\s*-\s*/g, " - ")
+      .replace(/\s{2,}/g, " ")
+      .trim();
+
+    endereco = endereco
+      .replace(/\b\d{5}\s*-?\s*\d{3}\b/g, "")
+      .replace(/,\s*,/g, ",")
+      .replace(/\s{2,}/g, " ")
+      .replace(/,\s*$/, "")
+      .trim();
+
+    endereco = endereco.replace(
+      /\s*,\s*([A-Za-zÀ-ÿ ]+)\s*-\s*SP$/i,
+      ", $1/SP"
+    );
+
+    if (endereco) enderecos.push(endereco);
+
+    atual = "";
+  }
+
+  for (const linhaBruta of linhas) {
+    const linha = linhaBruta.trim();
+
+    if (!linha || ignorar.test(linha)) continue;
+
+    if (titulo.test(linha)) {
+      salvar();
+      continue;
+    }
+
+    if (pareceEndereco.test(linha)) {
+      salvar();
+      atual = linha.replace(/^\d+[.)]\s*/, "");
+    } else if (atual) {
+      atual += " " + linha;
+    }
+  }
+
+  salvar();
+
+  const resultado = [...new Set(enderecos)];
+
+  // Atualiza a caixa de entrada com os endereços formatados.
+  addressesInput.value = resultado.join("\n");
+
+  countLabel.textContent = `${resultado.length}/${MAX_STOPS}`;
+  countLabel.style.color =
+    resultado.length > MAX_STOPS ? "#b91c1c" : "";
+
+  return resultado;
 }
 
 function setStatus(message, type = "") {

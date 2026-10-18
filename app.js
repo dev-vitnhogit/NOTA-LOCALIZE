@@ -3,7 +3,7 @@
 // 1. CONFIGURAÇÕES E VARIÁVEIS GLOBAIS
 // ==================================================
 
-const MAX_STOPS = 30;
+const MAX_STOPS = 100;
 
 // Serviços públicos usados neste protótipo. Eles podem impor limites ou ficar indisponíveis.
 const PHOTON_URL = "https://photon.komoot.io/api/";
